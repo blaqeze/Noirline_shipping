@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoirLine Shipping - Premium Global Logistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #0A0F24;
+            --secondary: #D4AF37;
+            --accent: #2A4A6E;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: white;
+            margin-left: 10px;
+            transition: var(--transition);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+            color: var(--secondary);
+            transition: var(--transition);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(10, 15, 36, 0.85), rgba(10, 15, 36, 0.92)), url('https://images.unsplash.com/photo-1519500528352-2d1460418d41?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 850px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--primary);
+            padding: 16px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            background-color: #e6c260;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid var(--secondary);
+            color: white;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: rgba(212, 175, 55, 0.15);
+        }
+        
+        .telegram-button {
+            background-color: #0088cc;
+            display: inline-flex;
+            align-items: center;
+            padding: 16px 35px;
+        }
+        
+        .telegram-button i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* Services Section */
+        .section {
+            padding: 90px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--secondary);
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 750px;
+            margin: 30px auto 0;
+            font-size: 1.1rem;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            text-align: center;
+            padding: 45px 30px;
+            position: relative;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .service-icon {
+            font-size: 55px;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.1);
+        }
+        
+        .service-card h3 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .service-card p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+        
+        .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .service-card .cta-button {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+        
+        /* Booking Process */
+        .booking-process {
+            background-color: #f9f9f9;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .booking-process::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.05);
+            z-index: 0;
+        }
+        
+        .booking-process::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: rgba(42, 74, 110, 0.05);
+            z-index: 0;
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            padding: 0 15px;
+        }
+        
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border: 3px solid var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-weight: bold;
+            font-size: 28px;
+            color: var(--secondary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        
+        .step:hover .step-number {
+            background-color: var(--secondary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step h4 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .step p {
+            color: var(--gray);
+            max-width: 250px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+        
+        /* Tracking Section */
+        .tracking {
+            background-color: var(--primary);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .tracking .section-title h2 {
+            color: white;
+        }
+        
+        .tracking-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .tracking-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transform: rotate(-2deg);
+            transition: var(--transition);
+        }
+        
+        .tracking-image:hover {
+            transform: rotate(0) scale(1.02);
+        }
+        
+        .tracking-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .tracking-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 45px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tracking-form h3 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+        }
+        
+        .feature-card {
+            display: flex;
+            background-color: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            border: 1px solid #f5f5f5;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--secondary);
+            margin-right: 25px;
+            min-width: 60px;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: rotate(5deg) scale(1.1);
+        }
+        
+        .feature-content h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .feature-content p {
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            background-color: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+            opacity: 0.03;
+            z-index: 0;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            position: relative;
+            transition: var(--transition);
+            border: 1px solid #f0f0f0;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-size: 80px;
+            color: var(--secondary);
+            opacity: 0.1;
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            margin-top: 40px;
+            color: var(--gray);
+            font-style: italic;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .author-info h4 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .rating {
+            color: var(--secondary);
+            margin-top: 8px;
+            font-size: 18px;
+        }
+        
+        /* FAQ Section */
+        .faq-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .faq-question {
+            background-color: white;
+            padding: 25px 30px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .faq-question:hover {
+            background-color: #fafafa;
+        }
+        
+        .faq-question i {
+            transition: var(--transition);
+        }
+        
+        .faq-answer {
+            background-color: white;
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .faq-item.active .faq-question {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 30px;
+            max-height: 1000px;
+        }
+        
+        /* Admin Section - Hidden by default */
+        .admin-section {
+            background-color: #f8f9fa;
+            padding: 100px 0;
+            display: none;
+        }
+        
+        .admin-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .admin-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+        }
+        
+        .admin-content {
+            padding: 35px;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+        }
+        
+        .admin-tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+        
+        .admin-tab:hover {
+            color: var(--secondary);
+        }
+        
+        .admin-tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--primary);
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        .shipment-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        .shipment-list {
+            margin-top: 30px;
+        }
+        
+        .shipment-item {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--secondary);
+            transition: var(--transition);
+        }
+        
+        .shipment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .shipment-info h4 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .tracking-code {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .status-indicator.processing {
+            background-color: #fff4e5;
+            color: #ff9800;
+        }
+        
+        .status-indicator.in-transit {
+            background-color: #e3f2fd;
+            color: #2196f3;
+        }
+        
+        .status-indicator.delivered {
+            background-color: #e8f5e9;
+            color: #4caf50;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 80px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-column h3 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            font-size: 1.05rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            transform: translateX(8px);
+        }
+        
+        .footer-contact p {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+        }
+        
+        .footer-contact i {
+            margin-right: 15px;
+            color: var(--secondary);
+            width: 20px;
+            margin-top: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--secondary);
+            transform: translateY(-5px);
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Live Chat Button */
+        .live-chat-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 26px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .live-chat-btn:hover {
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Hidden Admin Access Button */
+        .admin-access-btn {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background-color: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 22px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+            opacity: 0.7;
+            border: 1px solid var(--secondary);
+        }
+        
+        .admin-access-btn:hover {
+            opacity: 1;
+            background-color: var(--secondary);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .password-box {
+            background-color: white;
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .password-box::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.05);
+            z-index: 0;
+        }
+        
+        .password-box h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 28px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .password-box p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .password-submit {
+            background-color: var(--secondary);
+            color: var(--primary);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 15px;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .password-submit:hover {
+            background-color: #e6c260;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .error-message {
+            color: var(--danger);
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero {
+                padding: 100px 0;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+                gap: 50px;
+            }
+            
+            .steps-container::before {
+                display: none;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--primary);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 50px;
+                transition: left 0.3s;
+            }
+            
+            nav ul.active {
+                left: 0;
+            }
+            
+            nav ul li {
+                margin: 20px 0;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 70px 0;
+            }
+            
+            .tracking-container {
+                flex-direction: column;
+            }
+            
+            .tracking-form {
+                width: 100%;
+            }
+            
+            .service-card, .feature-card, .testimonial-card {
+                padding: 35px 25px;
+            }
+            
+            .admin-access-btn {
+                bottom: 110px;
+                right: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                padding: 80px 0;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .cta-button {
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .password-box {
+                padding: 30px 20px;
+            }
+            
+            .footer-grid {
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h1>NOIR<span>LINE</span></h1>
+            </a>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#booking">Booking</a></li>
+                    <li><a href="#tracking">Tracking</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#testimonials">Reviews</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Premium Global Shipping Solutions</h2>
+            <p>Experience seamless logistics with real-time tracking, personalized service, and dedicated support. Wherever your package needs to go, we deliver with excellence.</p>
+            <div class="hero-buttons">
+                <a href="#tracking" class="cta-button">Track Your Package</a>
+                <a href="#services" class="cta-button secondary">View Services</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Shipping Services</h2>
+                <p>Choose from our range of premium shipping solutions designed for speed, security, and reliability.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>Standard Shipping</h3>
+                    <p>Reliable delivery with tracking and insurance included. Perfect for everyday shipping needs.</p>
+                    <div class="price">$14.99</div>
+                    <a href="#booking" class="cta-button">Book Now</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Express Delivery</h3>
+                    <p>Priority handling and accelerated transit times for time-sensitive shipments.</p>
+                    <div class="price">$29.99</div>
+                    <a href="#booking" class="cta-button">Book Now</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Premium Global</h3>
+                    <p>White-glove service with customs clearance, dedicated support, and real-time tracking.</p>
+                    <div class="price">$49.99</div>
+                    <a href="#booking" class="cta-button">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Process -->
+    <section class="section booking-process" id="booking">
+        <div class="container">
+            <div class="section-title">
+                <h2>Simple Booking Process</h2>
+                <p>Our personalized service ensures you get exactly what you need for your shipment</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Select Service</h4>
+                    <p>Choose the shipping service that fits your needs and budget</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Contact Agent</h4>
+                    <p>Connect with our shipping specialist via Telegram</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Personalized Quote</h4>
+                    <p>Receive a custom quote based on your specific requirements</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Ship & Track</h4>
+                    <p>We handle everything while you track your shipment</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 70px;">
+                <h3 style="font-size: 26px; margin-bottom: 25px;">Ready to Ship? Contact Our Agent</h3>
+                <a href="https://t.me/noirline_agent" class="cta-button telegram-button">
+                    <i class="fab fa-telegram"></i> Message on Telegram
+                </a>
+                <p style="margin-top: 25px; color: var(--gray); max-width: 600px; margin: 25px auto 0;">Our shipping specialist will respond within 15 minutes during business hours (9AM-6PM GMT)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tracking Section -->
+    <section class="section tracking" id="tracking">
+        <div class="container">
+            <div class="section-title">
+                <h2>Track Your Shipment</h2>
+                <p>Enter your tracking number to get real-time updates on your package location and status.</p>
+            </div>
+            
+            <div class="tracking-container">
+                <div class="tracking-image">
+                    <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Global Shipping Network">
+                </div>
+                
+                <div class="tracking-form">
+                    <h3>Track Your Package</h3>
+                    <div class="form-group">
+                        <label for="tracking-number">Tracking Number</label>
+                        <input type="text" id="tracking-number" placeholder="Enter your tracking number">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email for notifications">
+                    </div>
+                    <button class="cta-button" style="width: 100%;" id="trackBtn">Track Now</button>
+                    
+                    <div class="tracking-info" style="margin-top: 30px; display: none;" id="trackingInfo">
+                        <h4>Tracking Information</h4>
+                        <div class="tracking-steps" style="margin-top: 20px;" id="trackingStatus">
+                            <!-- Status will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose NoirLine</h2>
+                <p>Discover the premium features that set us apart in the logistics industry.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Personalized Service</h3>
+                        <p>Dedicated shipping specialist for personalized assistance with every shipment.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Global Coverage</h3>
+                        <p>Shipping to over 200 countries with customs expertise and local support.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Mobile Tracking</h3>
+                        <p>Real-time updates on any device with our responsive tracking system.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Transparent Pricing</h3>
+                        <p>No hidden fees with all customs duties and taxes calculated upfront.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Customer Reviews</h2>
+                <p>See what our satisfied customers have to say about NoirLine Shipping.</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        The personalized service through Telegram was exceptional! My agent walked me through customs requirements and found the most cost-effective solution for my international shipment.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MK</div>
+                        <div class="author-info">
+                            <h4>Michael K.</h4>
+                            <p>Business Owner</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        I was hesitant about booking through Telegram at first, but it was the best decision. The agent responded instantly, answered all my questions, and provided a better rate than online platforms.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SJ</div>
+                        <div class="author-info">
+                            <h4>Sarah J.</h4>
+                            <p>Online Seller</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        The convenience of messaging my shipping agent directly on Telegram made the entire process smooth. I got real-time updates and personalized attention that automated systems can't provide.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RT</div>
+                        <div class="author-info">
+                            <h4>Robert T.</h4>
+                            <p>Frequent Shipper</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section" id="faq">
+        <div class="container">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about our shipping services.</p>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How does the Telegram booking process work? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Our booking process is simple: 1) Select a service on our website, 2) Click "Book Now" to message our agent on Telegram, 3) Provide shipment details to the agent, 4) Receive a personalized quote and shipping label, 5) Track your shipment through our portal.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What information should I provide to the agent? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Please provide: Package dimensions and weight, contents description, origin and destination addresses, desired service level, and any special handling requirements. Our agent will guide you through the process.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How quickly will the agent respond? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Our shipping specialists typically respond within 15 minutes during business hours (9 AM - 6 PM local time, Monday-Friday). For after-hours inquiries, you'll receive a response the next business day.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Can I get a quote before committing? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutely! Our agent will provide a detailed, no-obligation quote based on your shipment details. This quote includes all costs - shipping, insurance, and any applicable customs fees.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I pay for shipping services? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        After confirming your shipment details, our agent will provide secure payment options including bank transfer, PayPal, or other local payment methods based on your location.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Section - Hidden by default -->
+    <section class="section admin-section" id="admin">
+        <div class="container">
+            <div class="section-title">
+                <h2>Admin Portal</h2>
+                <p>Manage shipments and generate tracking codes</p>
+            </div>
+            
+            <div class="admin-container">
+                <div class="admin-header">
+                    <h2>NoirLine Shipping Dashboard</h2>
+                </div>
+                
+                <div class="admin-content">
+                    <div class="admin-tabs">
+                        <div class="admin-tab active" data-tab="create">Create Shipment</div>
+                        <div class="admin-tab" data-tab="manage">Manage Shipments</div>
+                    </div>
+                    
+                    <!-- Create Shipment Panel -->
+                    <div class="admin-panel active" id="createPanel">
+                        <h3>Create New Shipment</h3>
+                        <p>Fill in the details below to generate a new tracking code</p>
+                        
+                        <div class="shipment-form">
+                            <div class="form-group">
+                                <label for="customer-name">Customer Name</label>
+                                <input type="text" id="customer-name" placeholder="John Smith">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customer-email">Customer Email</label>
+                                <input type="email" id="customer-email" placeholder="john@example.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="origin">Origin</label>
+                                <input type="text" id="origin" placeholder="New York, USA">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="destination">Destination</label>
+                                <input type="text" id="destination" placeholder="London, UK">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="service-type">Service Type</label>
+                                <select id="service-type">
+                                    <option>Standard Shipping</option>
+                                    <option>Express Delivery</option>
+                                    <option>Premium Global</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" placeholder="2.5">
+                            </div>
+                        </div>
+                        
+                        <button class="cta-button" id="generateBtn">Generate Tracking Code</button>
+                        
+                        <div id="trackingResult" style="margin-top: 30px; display: none;">
+                            <h4>Tracking Code Generated</h4>
+                            <div style="background: #f5f5f5; padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center; border: 1px dashed #e0e0e0;">
+                                <div style="font-size: 26px; font-weight: 700; margin-bottom: 20px; color: var(--primary);" id="newTrackingCode"></div>
+                                <p style="font-size: 18px;">Share this code with your customer for package tracking</p>
+                            </div>
+                            <button class="cta-button secondary" id="copyBtn">Copy to Clipboard</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Manage Shipments Panel -->
+                    <div class="admin-panel" id="managePanel">
+                        <h3>Manage Shipments</h3>
+                        <p>Update shipment status and view tracking information</p>
+                        
+                        <div class="form-group">
+                            <input type="text" id="searchTracking" placeholder="Search by tracking number or customer">
+                        </div>
+                        
+                        <div class="shipment-list" id="shipmentList">
+                            <!-- Shipments will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>About NoirLine</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 25px; font-size: 1.1rem;">Premium shipping solutions for individuals and businesses worldwide. Fast, secure, and reliable logistics with transparent pricing.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/noirline_agent"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#booking">Booking Process</a></li>
+                        <li><a href="#tracking">Tracking</a></li>
+                        <li><a href="#testimonials">Reviews</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Shipping Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#services">International Shipping</a></li>
+                        <li><a href="#services">Express Delivery</a></li>
+                        <li><a href="#services">Customs Clearance</a></li>
+                        <li><a href="#services">Package Insurance</a></li>
+                        <li><a href="#services">Business Solutions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="footer-contact">
+                        <p><i class="fab fa-telegram"></i> <a href="https://t.me/noirline_agent" style="color: rgba(255,255,255,0.7);">@noirline_agent</a></p>
+                        <p><i class="fas fa-envelope"></i> support@noirline.com</p>
+                        <p><i class="fas fa-phone"></i> +1 (800) 555-SHIP</p>
+                        <p><i class="fas fa-clock"></i> 9 AM - 6 PM (Mon-Fri)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 NoirLine Shipping. All rights reserved. | <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none;">Terms of Service</a> | <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none;">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Live Chat Button -->
+    <div class="live-chat-btn" id="liveChatBtn">
+        <i class="fab fa-telegram"></i>
+    </div>
+    
+    <!-- Hidden Admin Access Button -->
+    <div class="admin-access-btn" id="adminAccessBtn">
+        <i class="fas fa-key"></i>
+    </div>
+    
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-box">
+            <h3>Admin Portal Access</h3>
+            <p>Enter your admin password to access the NoirLine dashboard</p>
+            <input type="password" class="password-input" id="adminPassword" placeholder="Enter password">
+            <div class="error-message" id="passwordError">Incorrect password. Please try again.</div>
+            <button class="password-submit" id="passwordSubmit">Access Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        // =============================
+        // Firebase Configuration
+        // =============================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDslUcBkARbzeWX4B1NlN9OPUHHFnQFek8",
+            authDomain: "noirline-shipping.firebaseapp.com",
+            projectId: "noirline-shipping",
+            storageBucket: "noirline-shipping.appspot.com",
+            messagingSenderId: "134916494304",
+            appId: "1:134916494304:web:40451e0046b3c252e55185"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Reference to shipments collection
+        const shipmentsRef = db.collection("shipments");
+
+        // =============================
+        // DOM Elements
+        // =============================
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const faqItems = document.querySelectorAll('.faq-item');
+        const trackBtn = document.getElementById('trackBtn');
+        const trackingInfo = document.getElementById('trackingInfo');
+        const trackingStatus = document.getElementById('trackingStatus');
+        const liveChatBtn = document.getElementById('liveChatBtn');
+        const adminTabs = document.querySelectorAll('.admin-tab');
+        const adminPanels = document.querySelectorAll('.admin-panel');
+        const generateBtn = document.getElementById('generateBtn');
+        const trackingResult = document.getElementById('trackingResult');
+        const newTrackingCode = document.getElementById('newTrackingCode');
+        const copyBtn = document.getElementById('copyBtn');
+        const adminAccessBtn = document.getElementById('adminAccessBtn');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('adminPassword');
+        const passwordSubmit = document.getElementById('passwordSubmit');
+        const passwordError = document.getElementById('passwordError');
+        const adminSection = document.getElementById('admin');
+
+        // Admin password
+        const ADMIN_PASSWORD = "noirline_admin_secure";
+
+        // =============================
+        // Firebase Functions
+        // =============================
+        
+        // Get shipment by tracking number
+        async function getShipment(trackingNumber) {
+            try {
+                const doc = await shipmentsRef.doc(trackingNumber).get();
+                if (doc.exists) {
+                    return doc.data();
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error getting shipment:", error);
+                return null;
+            }
+        }
+
+        // Add new shipment to Firestore
+        async function addShipment(shipmentData) {
+            try {
+                await shipmentsRef.doc(shipmentData.trackingCode).set(shipmentData);
+                return true;
+            } catch (error) {
+                console.error("Error adding shipment:", error);
+                return false;
+            }
+        }
+
+        // Get all shipments (for admin panel)
+        async function getAllShipments() {
+            try {
+                const snapshot = await shipmentsRef.get();
+                const shipments = [];
+                snapshot.forEach(doc => {
+                    shipments.push(doc.data());
+                });
+                return shipments;
+            } catch (error) {
+                console.error("Error getting shipments:", error);
+                return [];
+            }
+        }
+
+        // Search shipments
+        async function searchShipments(searchTerm) {
+            try {
+                const snapshot = await shipmentsRef.get();
+                const results = [];
+                
+                snapshot.forEach(doc => {
+                    const shipment = doc.data();
+                    if (shipment.trackingCode.toLowerCase().includes(searchTerm) || 
+                        shipment.customer.toLowerCase().includes(searchTerm)) {
+                        results.push(shipment);
+                    }
+                });
+                
+                return results;
+            } catch (error) {
+                console.error("Error searching shipments:", error);
+                return [];
+            }
+        }
+
+        // =============================
+        // Application Logic
+        // =============================
+        
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('nav ul li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+        
+        // FAQ Accordion
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Track shipment
+        trackBtn.addEventListener('click', async () => {
+            const trackingNumber = document.getElementById('tracking-number').value.trim();
+            const shipment = await getShipment(trackingNumber);
+            
+            if (shipment) {
+                let statusHTML = '';
+                
+                shipment.history.forEach(event => {
+                    let statusClass = "";
+                    let icon = "";
+                    
+                    switch(event.status) {
+                        case "processing":
+                            statusClass = "processing";
+                            icon = "fas fa-cog";
+                            break;
+                        case "in-transit":
+                            statusClass = "in-transit";
+                            icon = "fas fa-shipping-fast";
+                            break;
+                        case "customs":
+                            statusClass = "processing";
+                            icon = "fas fa-file-contract";
+                            break;
+                        case "out-for-delivery":
+                            statusClass = "in-transit";
+                            icon = "fas fa-truck";
+                            break;
+                        case "delivered":
+                            statusClass = "delivered";
+                            icon = "fas fa-check-circle";
+                            break;
+                    }
+                    
+                    statusHTML += `
+                        <div class="tracking-step" style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background-color: var(--${statusClass === "delivered" ? "success" : "warning"}); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="${icon}" style="color: white; font-size: 14px;"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 500;">${event.location}</div>
+                                <div style="font-size: 14px; opacity: 0.8; margin-top: 5px;">${event.timestamp}</div>
+                                <div class="status-indicator ${statusClass}" style="margin-top: 8px;">${event.status.replace(/-/g, ' ')}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                trackingStatus.innerHTML = statusHTML;
+                trackingInfo.style.display = 'block';
+            } else {
+                trackingStatus.innerHTML = `<p style="color: #ff6b6b; text-align: center; padding: 20px; font-weight: 500;">Tracking number not found. Please check and try again.</p>`;
+                trackingInfo.style.display = 'block';
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Live chat button functionality
+        liveChatBtn.addEventListener('click', () => {
+            window.open('https://t.me/noirline_agent', '_blank');
+        });
+        
+        // Admin tabs functionality
+        adminTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update active tab
+                adminTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding panel
+                adminPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                    if(panel.id === `${tabName}Panel`) {
+                        panel.classList.add('active');
+                    }
+                });
+                
+                // Load shipments when manage tab is opened
+                if (tabName === 'manage') {
+                    renderShipments();
+                }
+            });
+        });
+        
+        // Generate tracking code
+        generateBtn.addEventListener('click', async function() {
+            const serviceType = document.getElementById('service-type').value;
+            const trackingCode = generateTrackingCode(serviceType);
+            
+            // Create shipment data
+            const shipmentData = {
+                trackingCode: trackingCode,
+                customer: document.getElementById('customer-name').value || "New Customer",
+                origin: document.getElementById('origin').value || "Unknown",
+                destination: document.getElementById('destination').value || "Unknown",
+                service: serviceType,
+                status: "processing",
+                history: [
+                    { status: "processing", location: "Facility", timestamp: new Date().toLocaleString() }
+                ],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Add to Firestore
+            const success = await addShipment(shipmentData);
+            
+            if (success) {
+                // Display the tracking code
+                newTrackingCode.textContent = trackingCode;
+                trackingResult.style.display = 'block';
+            } else {
+                alert("Failed to create shipment. Please try again.");
+            }
+        });
+        
+        // Copy tracking code
+        copyBtn.addEventListener('click', function() {
+            const code = newTrackingCode.textContent;
+            navigator.clipboard.writeText(code);
+            
+            const originalText = this.textContent;
+            this.textContent = '✓ Copied!';
+            
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 2000);
+        });
+        
+        // Tracking Code Generator
+        function generateTrackingCode(serviceType) {
+            const prefix = "NL";
+            let serviceCode = "ST"; // Standard
+            
+            if (serviceType === "Express Delivery") serviceCode = "EX";
+            if (serviceType === "Premium Global") serviceCode = "PM";
+            
+            const randomChars = () => Math.random().toString(36).substr(2, 4).toUpperCase();
+            
+            return `${prefix}${serviceCode}-${randomChars()}-${randomChars()}`;
+        }
+        
+        // Render shipments
+        async function renderShipments() {
+            const shipmentList = document.getElementById('shipmentList');
+            const searchTerm = document.getElementById('searchTracking').value.toLowerCase();
+            
+            let shipments = [];
+            
+            if (searchTerm) {
+                shipments = await searchShipments(searchTerm);
+            } else {
+                shipments = await getAllShipments();
+            }
+            
+            shipmentList.innerHTML = '';
+            
+            shipments.forEach(shipment => {
+                let statusClass = "";
+                let statusText = "";
+                
+                switch(shipment.status) {
+                    case "processing":
+                        statusClass = "processing";
+                        statusText = "Processing";
+                        break;
+                    case "in-transit":
+                        statusClass = "in-transit";
+                        statusText = "In Transit";
+                        break;
+                    case "delivered":
+                        statusClass = "delivered";
+                        statusText = "Delivered";
+                        break;
+                }
+                
+                shipmentList.innerHTML += `
+                    <div class="shipment-item">
+                        <div class="shipment-info">
+                            <h4>${shipment.customer}</h4>
+                            <div class="tracking-code">${shipment.trackingCode}</div>
+                            <div style="margin: 8px 0;">${shipment.origin} → ${shipment.destination}</div>
+                            <div class="status-indicator ${statusClass}">${statusText}</div>
+                        </div>
+                        <div class="shipment-actions">
+                            <button class="cta-button secondary" data-code="${shipment.trackingCode}">View Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.shipment-actions button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const code = this.dataset.code;
+                    document.getElementById('tracking-number').value = code;
+                    document.getElementById('trackBtn').click();
+                    window.scrollTo({ top: document.getElementById('tracking').offsetTop, behavior: 'smooth' });
+                });
+            });
+        }
+        
+        // Search shipments
+        document.getElementById('searchTracking').addEventListener('input', renderShipments);
+        
+        // Admin Access Functionality
+        
+        // Show password modal when admin button is clicked
+        adminAccessBtn.addEventListener('click', () => {
+            passwordModal.style.display = 'flex';
+            passwordInput.focus();
+        });
+        
+        // Submit password
+        passwordSubmit.addEventListener('click', () => {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                // Hide modal
+                passwordModal.style.display = 'none';
+                
+                // Show admin section
+                adminSection.style.display = 'block';
+                
+                // Scroll to admin section
+                window.scrollTo({
+                    top: adminSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Clear password field
+                passwordInput.value = '';
+                passwordError.style.display = 'none';
+            } else {
+                // Show error
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+        
+        // Close modal when clicking outside the password box
+        passwordModal.addEventListener('click', (e) => {
+            if (e.target === passwordModal) {
+                passwordModal.style.display = 'none';
+                passwordInput.value = '';
+                passwordError.style.display = 'none';
+            }
+        });
+        
+        // Submit on enter key
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                passwordSubmit.click();
+            }
+        });
+        
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.padding = '10px 0';
+                header.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            } else {
+                header.style.padding = '15px 0';
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
